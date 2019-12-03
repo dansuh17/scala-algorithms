@@ -1,20 +1,22 @@
 package my.algorithm
 
-object StrangePrinter
-
-object A extends App {
+object StrangePrinter extends App {
   println(StrangePrinterSolution.strangePrinter("aaaaaaaaaaaaaaaaaaaaa"))
   println(StrangePrinterSolution.strangePrinter("aba"))
 }
 
 object StrangePrinterSolution {
   def strangePrinter(s: String): Int = {
-    val n = s.length
-    val arr: Array[Array[Int]] = Array.tabulate(n, n)((_, _) => -1)
+    // compress the string by removing consecutive duplicate characters
+    val newString: String = s.head + ((s zip s.tail) collect {
+      case (a, b) if a != b => b
+    }).foldLeft("")((acc, next) => acc + next)
+
+    val n = newString.length
+    val arr = Array.tabulate(n, n)((_, _) => -1)
 
     def fill(arr: Array[Array[Int]], start: Int, end: Int): Int = {
       if (start == end) {
-        // println(s"${arr(start)(end)}, ${start}, ${end}")
         1
       } else if (start > end) {
         0
@@ -22,10 +24,10 @@ object StrangePrinterSolution {
         arr(start)(end)
       } else {
         val naiveCost = fill(arr, start, end - 1) + 1
-        val endChar = s(end)
+        val endChar = newString(end)
         val subCosts =
           (start until end)
-            .filter(i => endChar == s(i))
+            .filter(i => endChar == newString(i))
             .foldRight(List.empty[Int])((i, acc) => {
               val subCost = fill(arr, start, i - 1) + fill(arr, i + 1, end)
               subCost :: acc
@@ -35,7 +37,6 @@ object StrangePrinterSolution {
         val minCost = allCosts.min
 
         arr(start)(end) = minCost // memoize
-        // println(s"${minCost}, ${start}, ${end}")
         minCost
       }
     }

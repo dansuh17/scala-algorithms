@@ -5,10 +5,10 @@ package my.algorithm
   * https://leetcode.com/problems/edit-distance/
   */
 object EditDistance extends App {
-  print(Solution.minDistance("abc", "aaa"))
+  print(EditDistanceSolution.minDistance("abc", "aaa"))
 }
 
-object Solution {
+object EditDistanceSolution {
   def minDistance(word1: String, word2: String): Int = {
     val N = word1.length + 1 // empty string
     val M = word2.length + 1
